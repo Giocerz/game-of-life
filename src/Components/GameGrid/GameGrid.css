@@ -13,3 +13,15 @@
 .cell.life {
     background-color: #001d3d;
 }
+
+.controls-container {
+    position: absolute;
+    opacity: 0.4;
+    z-index: 1;
+    transition: all .3s ease-in-out;
+}
+
+.controls-container:hover {
+    opacity: 1;
+}
+

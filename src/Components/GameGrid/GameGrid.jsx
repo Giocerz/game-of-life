@@ -1,15 +1,16 @@
 import { useEffect } from 'react'
 import './GameGrid.css'
 import { TransformWrapper, TransformComponent, useControls } from "react-zoom-pan-pinch";
+import { MdZoomIn, MdZoomOut, MdZoomInMap} from "react-icons/md";
 
 const Controls = () => {
     const { zoomIn, zoomOut, resetTransform } = useControls();
     return (
-      <>
-        <button onClick={() => zoomIn()}>Zoom In</button>
-        <button onClick={() => zoomOut()}>Zoom Out</button>
-        <button onClick={() => resetTransform()}>Reset</button>
-      </>
+      <div className='controls-container'>
+        <button onClick={() => zoomIn()}><MdZoomIn /></button>
+        <button onClick={() => zoomOut()}><MdZoomOut /></button>
+        <button onClick={() => resetTransform()}><MdZoomInMap /></button>
+      </div>
     );
   };
 
@@ -22,9 +23,9 @@ function GameGrid({ board }) {
             }
         }
         return flatBoard;
-    }
+    };
     return (
-        <TransformWrapper>
+        <TransformWrapper style={{ position: 'relative'}}>
             <Controls />
             <TransformComponent>
                 <div className='gameGrid'>
@@ -38,7 +39,7 @@ function GameGrid({ board }) {
                 </div>
             </TransformComponent>
         </TransformWrapper>
-    )
+    );
 }
 
 export default GameGrid;
