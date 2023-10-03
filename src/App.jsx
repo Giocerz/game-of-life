@@ -4,6 +4,8 @@ import { randomBoard } from './logic/randomBoard';
 import GameGrid from './Components/GameGrid/GameGrid';
 import { compareBoard, countPopulation } from './logic/compareBoard';
 import { MdRefresh, MdPause, MdPlayArrow, MdSettings } from "react-icons/md";
+import { rleReader, rleToArray } from './logic/rleToArray';
+import { centerPattern } from './logic/centerPattern';
 
 function App() {
   const [board, setBoard] = useState(randomBoard());
@@ -12,7 +14,8 @@ function App() {
   const [population, setPopulation] = useState(0);
   const [gameDelayId, setGameDelayId] = useState();
   const [gameDelay, setGameDelay] = useState(500);
-  const [configDisplay, setConfigDisplay] = useState(false);
+  const [configDisplay, setConfigDisplay] = useState(true);
+  const [inputPattern, setInpurPattern] = useState('');
 
   useEffect(() => {
     if (isPause) return;
@@ -47,7 +50,23 @@ function App() {
   const openConfigurationView = () => {
     setConfigDisplay(true);
     setIsPause(true);
-  }
+  };
+
+  const handleChangeTextArea = (event) => {
+    setInpurPattern(event.target.value);
+  };
+
+  const handlePattern = () => {
+    const arrPattern = rleReader(inputPattern);
+    const patternBoard = rleToArray(arrPattern);
+    const centerBoard = centerPattern(patternBoard);
+    setConfigDisplay(false);
+    clearTimeout(gameDelayId);
+    setBoard(centerBoard);
+    setPopulation(0);
+    setGenerations(0);
+    setIsPause(true);
+  };
 
   return (
     <>
@@ -63,13 +82,14 @@ function App() {
             <input type='number' min={1} max={100} defaultValue={100} />
             <label>x: </label>
             <input type='number' min={1} max={50} defaultValue={50} />
-            <input></input>
+            <textarea value={inputPattern} onChange={handleChangeTextArea} />
             <button onClick={applyConfiguration}>Random</button>
+            <button onClick={handlePattern}>Pattern</button>
           </div>
         }
         <div className='game-box'>
           <div className='game-panel'>
-            <button><MdSettings /></button>
+            <button onClick={openConfigurationView}><MdSettings /></button>
             <button onClick={resetGame}><MdRefresh /></button>
             <button onClick={() => setIsPause(!isPause)}>
               {
@@ -92,7 +112,7 @@ function App() {
         </div>
       </main>
     </>
-  )
+  );
 }
 
 export default App

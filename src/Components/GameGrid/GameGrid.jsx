@@ -1,9 +1,9 @@
-import { useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import './GameGrid.css'
 import { TransformWrapper, TransformComponent, useControls } from "react-zoom-pan-pinch";
 import { MdZoomIn, MdZoomOut, MdZoomInMap} from "react-icons/md";
 
-const Controls = () => {
+const ZoomControls = () => {
     const { zoomIn, zoomOut, resetTransform } = useControls();
     return (
       <div className='controls-container'>
@@ -15,30 +15,39 @@ const Controls = () => {
   };
 
 function GameGrid({ board }) {
-    const flattenBoard = () => {
-        let flatBoard = [];
-        for (let i = 0; i < board.length; i++) {
-            for (let j = 0; j < board[i].length; j++) {
-                flatBoard.push(board[i][j]);
-            }
-        }
-        return flatBoard;
-    };
+    const canvaBoardRef = useRef(null);
+
+    const draw = (context) => {
+        context.fillStyle = '#EFF2F4';
+        context.fillRect(0, 0, 400, 600);
+
+        board.forEach((row, y) => {
+            row.forEach((value, x) => {
+                if(value) {
+                    context.fillStyle = 'black';
+                    context.fillRect(x, y, 1, 1);
+                }
+            })
+        });
+    }
+
+    useEffect(() => {
+        const canvas = canvaBoardRef.current;
+        const context = canvas.getContext('2d');
+        context.resetTransform();
+        context.scale(4, 4);
+        draw(context);
+    }, [board])
+
     return (
+        <>
         <TransformWrapper style={{ position: 'relative'}}>
-            <Controls />
+            <ZoomControls />
             <TransformComponent>
-                <div className='gameGrid'>
-                    {flattenBoard().map((value, index) => {
-                        if (value) {
-                            return <span key={index} className='cell life'></span>
-                        } else {
-                            return <span key={index} className='cell '></span>
-                        }
-                    })}
-                </div>
+                <canvas ref={canvaBoardRef} width={400} height={600} />
             </TransformComponent>
         </TransformWrapper>
+        </>
     );
 }
 
