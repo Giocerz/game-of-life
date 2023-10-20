@@ -44,7 +44,7 @@ function GameGrid({ board }) {
         <TransformWrapper style={{ position: 'relative'}}>
             <ZoomControls />
             <TransformComponent>
-                <canvas ref={canvaBoardRef} width={400} height={600} />
+                <canvas ref={canvaBoardRef} width={1000} height={1000} />
             </TransformComponent>
         </TransformWrapper>
         </>

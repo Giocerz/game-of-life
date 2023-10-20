@@ -7,6 +7,14 @@ import { MdRefresh, MdPause, MdPlayArrow, MdSettings } from "react-icons/md";
 import { rleReader, rleToArray } from './logic/rleToArray';
 import { centerPattern } from './logic/centerPattern';
 
+const ConfigurationView = ({ children, className }) => {
+  return(
+    <div className={className}>
+      {children}
+    </div>
+  )
+}
+
 function App() {
   const [board, setBoard] = useState(randomBoard());
   const [isPause, setIsPause] = useState(true);
@@ -16,6 +24,7 @@ function App() {
   const [gameDelay, setGameDelay] = useState(500);
   const [configDisplay, setConfigDisplay] = useState(true);
   const [inputPattern, setInpurPattern] = useState('');
+  const [animConfig, setAnimConfig] = useState('');
 
   useEffect(() => {
     if (isPause) return;
@@ -39,17 +48,18 @@ function App() {
   }
 
   const applyConfiguration = () => {
-    setConfigDisplay(false);
     clearTimeout(gameDelayId);
     setBoard(randomBoard());
     setPopulation(0);
     setGenerations(0);
     setIsPause(true);
+    setAnimConfig('out');
   };
 
   const openConfigurationView = () => {
     setConfigDisplay(true);
     setIsPause(true);
+    setAnimConfig('');
   };
 
   const handleChangeTextArea = (event) => {
@@ -57,16 +67,22 @@ function App() {
   };
 
   const handlePattern = () => {
+    if(inputPattern === '') {
+      alert('Paste your pattern');
+      return
+    }
     const arrPattern = rleReader(inputPattern);
     const patternBoard = rleToArray(arrPattern);
     const centerBoard = centerPattern(patternBoard);
-    setConfigDisplay(false);
     clearTimeout(gameDelayId);
     setBoard(centerBoard);
     setPopulation(0);
     setGenerations(0);
     setIsPause(true);
+    setAnimConfig('out');
   };
+
+
 
   return (
     <>
@@ -76,16 +92,20 @@ function App() {
       </header>
       <main className='game-main'>
         {configDisplay &&
-          <div className='configurations' >
+          <ConfigurationView key={`config-1${animConfig}`} className={`configurations ${animConfig}`} >
             <h2>Configurations</h2>
-            <label>y: </label>
-            <input type='number' min={1} max={100} defaultValue={100} />
-            <label>x: </label>
-            <input type='number' min={1} max={50} defaultValue={50} />
-            <textarea value={inputPattern} onChange={handleChangeTextArea} />
-            <button onClick={applyConfiguration}>Random</button>
-            <button onClick={handlePattern}>Pattern</button>
-          </div>
+            <label>y: 
+              <input type='number' min={1} max={100} defaultValue={100} />
+            </label>
+            <label>x: 
+              <input type='number' min={1} max={50} defaultValue={50} />
+            </label>
+            <label>Paste your pattern: 
+            </label>
+            <textarea value={inputPattern} cols={25} rows={10} onChange={handleChangeTextArea} />
+            <button onClick={applyConfiguration}>Set Random</button>
+            <button onClick={handlePattern}>Set Pattern</button>
+          </ConfigurationView>
         }
         <div className='game-box'>
           <div className='game-panel'>
@@ -100,9 +120,9 @@ function App() {
                   <MdPause />
               }
             </button>
-            <button onClick={() => setGameDelay(500)}>1x</button>
-            <button onClick={() => setGameDelay(250)}>2x</button>
-            <button onClick={() => setGameDelay(167)}>3x</button>
+            <button onClick={() => setGameDelay(240)}>1x</button>
+            <button onClick={() => setGameDelay(120)}>2x</button>
+            <button onClick={() => setGameDelay(80)}>3x</button>
             <span>{`Gen:${generations}`}</span>
             <span>{`Pop:${population}`}</span>
           </div>
