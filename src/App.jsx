@@ -16,7 +16,8 @@ const ConfigurationView = ({ children, className }) => {
 }
 
 function App() {
-  const [board, setBoard] = useState(randomBoard());
+  const [initPattern, setInitPattern] = useState();
+  const [board, setBoard] = useState();
   const [isPause, setIsPause] = useState(true);
   const [generations, setGenerations] = useState(0);
   const [population, setPopulation] = useState(0);
@@ -41,7 +42,7 @@ function App() {
 
   const resetGame = () => {
     clearTimeout(gameDelayId);
-    setBoard(randomBoard());
+    setBoard(initPattern);
     setPopulation(0);
     setGenerations(0);
     setIsPause(true);
@@ -49,7 +50,9 @@ function App() {
 
   const applyConfiguration = () => {
     clearTimeout(gameDelayId);
-    setBoard(randomBoard());
+    const pattern = randomBoard();
+    setInitPattern(pattern)
+    setBoard(pattern);
     setPopulation(0);
     setGenerations(0);
     setIsPause(true);
@@ -75,6 +78,7 @@ function App() {
     const patternBoard = rleToArray(arrPattern);
     const centerBoard = centerPattern(patternBoard);
     clearTimeout(gameDelayId);
+    setInitPattern(centerBoard);
     setBoard(centerBoard);
     setPopulation(0);
     setGenerations(0);
@@ -120,9 +124,9 @@ function App() {
                   <MdPause />
               }
             </button>
-            <button onClick={() => setGameDelay(240)}>1x</button>
-            <button onClick={() => setGameDelay(120)}>2x</button>
-            <button onClick={() => setGameDelay(80)}>3x</button>
+            <button onClick={() => setGameDelay(200)}>1x</button>
+            <button onClick={() => setGameDelay(100)}>2x</button>
+            <button onClick={() => setGameDelay(50)}>3x</button>
             <span>{`Gen:${generations}`}</span>
             <span>{`Pop:${population}`}</span>
           </div>
